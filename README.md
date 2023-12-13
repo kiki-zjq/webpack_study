@@ -179,3 +179,53 @@ module.exports = {
   ]
 };
 ```
+
+---
+### Plugin HTML
+
+In the previous example, when we open the `index.html`, we will find the text color comes back to black, this is because we extract the CSS to a file `main.css`, and our HTML file didn't import this file.
+
+In this example, we want to generate the `index.html` in the `dist` folder and import the related css file automatically.
+
+First, we should install the plugin `npm install html-webpack-plugin`
+
+Change the webpack config
+```js
+const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  mode: 'development',
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+    clean: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          {loader: MiniCssExtractPlugin.loader},
+          // 'style-loader',
+          'css-loader',
+        ]
+      }
+    ]
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: `[name].css`,
+    }), 
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, './index.html')
+    })
+  ]
+};
+```
+
+After we run `npm run build`, we can see a new `index.html` file below the `dist` folder. And the css has applied successfully.
+
+Even though in the template html file `index.html`, we do not write any code about import the css file. But as the css file has been import in the  `./src/index.js`, so webpack automatically create a reference in the generated `./dist/index.html`
