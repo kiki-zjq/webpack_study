@@ -300,4 +300,32 @@ And then `npm run dev`
 
 In this case, the HMR has been enabled automatically. 
 - If you modify the template HTML file, you should refresh the webpage by yourself to see the update.
-- If you modify the CSS file or the JS file, you can see you modification automatically.
+- If you modify the CSS file, you can see you modification automatically.
+
+However, in this case, we do not implement JS HMR. For example, once you change the JS code in the `foo.js`, all JS code in `index.js` will be re-run
+```js
+if (module.hot) {
+  module.hot.accept('./bar.js', () => {
+    console.log('Accepting the updated bar module!')
+    bar();
+  })
+}
+```
+By adding the code like this, if you change the code in ths `bar.js`, all other code will not be re-run.
+But still, if you change the code in the `foo.js`, then all other JS code will be re-run.
+
+---
+### SourceMap
+
+In the previous case, if you make a mistake intentionally, for example
+```js
+// bar.js
+export default function bar() {
+  //
+  consolessss.log('This is bar')
+}
+```
+
+You can find the source code in the chrome dev tool is compiled version.
+
+You can add `devtool: 'source-map'` in the `webpack.config.js`. And then you can find the source code in the chrome dev tool is pre-compiled version.
