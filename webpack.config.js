@@ -7,17 +7,23 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
+    clean: true,
   },
   module: {
     rules: [
       {
         test: /\.css$/,
         use: [
-          // {loader: MiniCssExtractPlugin.loader},
-          'style-loader',
+          {loader: MiniCssExtractPlugin.loader},
+          // 'style-loader',
           'css-loader',
         ]
       }
     ]
-  }
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: `[name].css`,
+    }), 
+  ]
 };

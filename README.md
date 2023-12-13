@@ -139,4 +139,43 @@ module.exports = {
 ```
 
 Run `npm run build` again, then we can see the expected outcomes.
+
 ---
+### Extract CSS
+
+In the previous case, all JavaScript code and CSS code are in the `bundle.js`, what if we want to extract CSS code to a single file?
+
+First, `npm install mini-css-extract-plugin` to install the plugin.
+
+And then modify the `webpack.config.js`
+```js
+const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+module.exports = {
+  mode: 'development',
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+    clean: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          {loader: MiniCssExtractPlugin.loader},
+          // 'style-loader',
+          'css-loader',
+        ]
+      }
+    ]
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: `[name].css`,
+    }), 
+  ]
+};
+```
