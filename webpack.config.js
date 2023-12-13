@@ -29,5 +29,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, './index.html')
     })
-  ]
+  ],
+  devServer: {
+    host: 'localhost',
+    port: '3000',
+    open: true,
+    hot: true,
+  },
 };

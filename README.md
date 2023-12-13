@@ -229,3 +229,75 @@ module.exports = {
 After we run `npm run build`, we can see a new `index.html` file below the `dist` folder. And the css has applied successfully.
 
 Even though in the template html file `index.html`, we do not write any code about import the css file. But as the css file has been import in the  `./src/index.js`, so webpack automatically create a reference in the generated `./dist/index.html`
+
+---
+### Dev Server
+
+```js
+const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  mode: 'development',
+  entry: './src/index.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+    clean: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          {loader: MiniCssExtractPlugin.loader},
+          // 'style-loader',
+          'css-loader',
+        ]
+      }
+    ]
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: `[name].css`,
+    }), 
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, './index.html')
+    })
+  ],
+  devServer: {
+    host: 'localhost',
+    port: '3000',
+    open: true,
+    hot: true,
+  },
+};
+```
+
+And then change the `package.json`
+```json
+{
+  "dependencies": {
+    "css-loader": "^6.8.1",
+    "html-webpack-plugin": "^5.5.4",
+    "mini-css-extract-plugin": "^2.7.6",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.89.0"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "dev": "webpack serve --config webpack.config.js"
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  }
+}
+```
+
+And then `npm run dev`
+
+In this case, the HMR has been enabled automatically. 
+- If you modify the template HTML file, you should refresh the webpage by yourself to see the update.
+- If you modify the CSS file or the JS file, you can see you modification automatically.
